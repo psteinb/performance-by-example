@@ -1,17 +1,20 @@
 ---
 layout: lesson
-title: Lesson Title
+title: Performant C++ by Example
 ---
 Paragraph(s) of introductory material.
 
 > ## Prerequisites {.prereq}
 >
-> What learners need to know before tackling this lesson.
+> Learners are expected to be literate C++ programmers both in terms of syntax and the standard library (STL). That means, they are expected to be able to write a function and call it, using STL containers and algorithms. They are expected to be able to write simple classes and exploiting inheritance. Finally, the following material relies on the fact that learners can compile (possibly link) simple programs on the command line and use libraries in these apps as well.
 
 ## Topics
 
-1.  [Topic Title 1](01-slug.html)
-2.  [Topic Title 2](02-slug.html)
+1.  [Computers and Coffee Machines](01-computers.html)
+1.  [Is it fast or slow?](02-fastslow.html)
+1.  [The Free Lunch is over](03-plain_threads.html)
+1.  [Threading for the rest of us](04-tbb.html)
+1.  [Source Code from thin air](05-meta.html)
 
 ## Other Resources
 
