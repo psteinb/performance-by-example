@@ -1,8 +1,8 @@
 ---
 layout: page
-title: Lesson Title
+title: Computers and Coffee Machines
 subtitle: Topic Title
-minutes: 10
+minutes: 20
 ---
 > ## Learning Objectives {.objectives}
 >
