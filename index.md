@@ -11,7 +11,7 @@ author: Peter Steinbach
 ## Topics
 
 1.  [Computers and Coffee Machines](01-computers.html)
-1.  [Is it fast or slow?](02-fastslow.html)
+1.  [Abstractions Galore](02-fastslow.html)
 1.  [The Free Lunch is over](03-plain_threads.html)
 1.  [Threading for the rest of us](04-tbb.html)
 1.  [Source Code from thin air](05-meta.html)
