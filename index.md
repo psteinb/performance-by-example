@@ -1,8 +1,8 @@
 ---
 layout: lesson
 title: Performant C++ by Example
+author: Peter Steinbach
 ---
-Paragraph(s) of introductory material.
 
 > ## Prerequisites {.prereq}
 >
