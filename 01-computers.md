@@ -29,13 +29,28 @@ She heard from a friend of hers, that writing tests before any implementation is
 #include "iot.hpp"
 #include "gtest/gtest.h"
 
-TEST(Call_Devices, Size_not_empty) {
-	EXPECT_GT(iot::devices(0,0).size(),0);
+TEST(access_works,in_first_room) {
+	EXPECT_GT(iot::devices_active(0,0),0);
 }
 ~~~
 
+> ## Unit test libraries for C++ {.callout}
+>
+> We opted for [google-test](https://github.com/google/googletest) library, not because we prefer it or we were paid by google or any other unlikely reason. No, simply because the target audience of the first incarnation of this material was known be part of a community that uses/used google-test extensively. At the time of writing, there are other very good unit testing libraries out there: [boost unified test framework](http://www.boost.org/doc/libs/1_60_0/libs/test/doc/html/index.html), [cgreen](https://github.com/cgreen-devs/cgreen), [catch](https://github.com/philsquared/Catch), ... . In the end, it depends on your tast, the context you work in and what you require a unit test framework to do. So please, experiment!
+
+
 ~~~ {.output}
-xxx bla bla xxx
+$ ./test_device_access 
+[==========] Running 1 test from 1 test case.
+[----------] Global test environment set-up.
+[----------] 1 test from access_works
+[ RUN      ] access_works.in_first_room
+[       OK ] access_works.in_first_room (0 ms)
+[----------] 1 test from access_works (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test case ran. (0 ms total)
+[  PASSED  ] 1 test.
 ~~~
 
 She will add some more tests now, to explore the API of the `iot` namespace and it's features. In any case, she soon turns to the task at hand.
