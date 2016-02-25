@@ -53,23 +53,24 @@ $ ./test_device_access
 [  PASSED  ] 1 test.
 ~~~
 
-She will add some more tests now, to explore the API of the `iot` namespace and it's features. In any case, she soon turns to the task at hand.
+She will add some more tests now, to explore the API of the `iot` namespace and it's features. In any case, she soon turns to the task at hand. She wants to sum up the number of online devices. This needs to be performed very quickly as the information will be displayed in real-time in the foyer of the institute. If something hangs there, the IOTs good name is at stake. 
 
 ~~~ {.c}
 TEST(Call_Devices, Sum_of_active) {
 
 	size_t sum = 0;
-	for(size_t room = 0;room < 128;++room){
-		for(size_t level = 0;level < 16;++level){
+	for(size_t room = 0;room < iot::n_rooms();++room){
+		for(size_t level = 0;level < iot::n_levels();++level){
 			sum += iot::active_devices(level,room);
 		}
 	}
-		
+
+	EXPECT_LT(sum,std::pow(2,31));
 	EXPECT_GT(sum,0);
 }
 ~~~
 
-This is such a common operation, that she decides to put it into a function in order to reuse it later on.
+This is such a common operation, that she decides to put it into a function in order to reuse it later on. The test at the end just asks for any value greater than zero to act as a lower bound. The upper bound was set by the administration due to issues with number of overflow in a popular spreadsheat software. After watching the unit test complete, she has a feeling that the performance is not yet optimal.
 
 > ## Header-Only versus A library {.callout}
 >

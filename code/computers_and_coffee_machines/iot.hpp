@@ -23,5 +23,13 @@ namespace iot {
   static int devices_active(int room_number, int level_number){
     return devices_[(level_number*N_ROOMS)+room_number];
   }
+
+  static int n_rooms(){
+    return N_ROOMS;
+  }
+
+  static int n_levels(){
+    return N_LEVELS;
+  }
   
 }
