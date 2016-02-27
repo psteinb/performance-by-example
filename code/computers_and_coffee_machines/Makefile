@@ -1,5 +1,5 @@
 GTEST_ROOT = /home/psteinb/software/googletest/master/
-CXXFLAGS +=  -std=c++11 -I$(GTEST_ROOT)/include
+CXXFLAGS +=  -g -std=c++11 -I$(GTEST_ROOT)/include
 LDFLAGS += -L$(GTEST_ROOT)/lib -lgtest -pthread #-lgmock
 
 SRC_FILES = $(wildcard test*cpp)

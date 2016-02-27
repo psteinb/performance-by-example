@@ -20,7 +20,7 @@ namespace iot {
   
   static std::vector<int> devices_ = fill_devices();
 
-  static int devices_active(int room_number, int level_number){
+  static int devices_active(int level_number, int room_number){
     return devices_[(level_number*N_ROOMS)+room_number];
   }
 
