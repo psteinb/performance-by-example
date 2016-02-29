@@ -1,18 +1,27 @@
 #pragma once
 #include <vector>
 
-#ifndef N_LEVELS
-#define N_LEVELS 32
-#endif
-
-#ifndef N_ROOMS
-#define N_ROOMS (1<<10)
-#endif
 
 namespace iot {
 
+  static int n_levels_ = 64;
+  static int n_rooms_ = 1 << 20;
+
+  
+  static int n_rooms(){
+    return n_rooms_;
+  }
+
+  static int n_levels(){
+    return n_levels_;
+  }
+
+  static int size(){
+    return n_levels_*n_rooms_;
+  }
+  
   static std::vector<int> fill_devices(){
-    std::vector<int> value(N_LEVELS*N_ROOMS);
+    std::vector<int> value(size());
     for (int & i : value)
       i = 42;//TODO insert RNG here
     return value;
@@ -20,16 +29,8 @@ namespace iot {
   
   static std::vector<int> devices_ = fill_devices();
 
-  static int devices_active(int level_number, int room_number){
-    return devices_[(level_number*N_ROOMS)+room_number];
-  }
-
-  static int n_rooms(){
-    return N_ROOMS;
-  }
-
-  static int n_levels(){
-    return N_LEVELS;
+  static int active_devices(int level_number, int room_number){
+    return devices_[(level_number*n_rooms())+room_number];
   }
   
 }

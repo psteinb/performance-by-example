@@ -5,7 +5,7 @@
 #include "iot.hpp"
 
 TEST(access_works,in_first_room) {
-  EXPECT_GT(iot::devices_active(0,0),0);
+  EXPECT_GT(iot::active_devices(0,0),0);
   
 }
 
@@ -14,7 +14,7 @@ TEST(access_works,sum_of_all) {
 	size_t sum = 0;
 	for(size_t room = 0;room < iot::n_rooms();++room){
 		for(size_t level = 0;level < iot::n_levels();++level){
-			sum += iot::devices_active(level,room);
+			sum += iot::active_devices(level,room);
 		}
 	}
 	
