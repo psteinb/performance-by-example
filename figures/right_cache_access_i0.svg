@@ -317,7 +317,7 @@
   <use xlink:href="#glyph2-7" x="558.857" y="78.593"/>
   <use xlink:href="#glyph2-2" x="565.8809" y="78.593"/>
 </g>
-<path style="fill:none;stroke-width:1.59404;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(100%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 37.4015 -32.34125 L 65.749156 -32.34125 L 65.749156 -3.993594 L 37.4015 -3.993594 Z M 37.4015 -32.34125 " transform="matrix(1,0,0,-1,46.786,21.19)"/>
 <path style="fill:none;stroke-width:1.59404;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(100%,50%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 37.4015 -32.34125 L 313.784312 -32.34125 L 313.784312 -3.993594 L 37.4015 -3.993594 Z M 37.4015 -32.34125 " transform="matrix(1,0,0,-1,46.786,21.19)"/>
+<path style="fill:none;stroke-width:1.59404;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(100%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 37.4015 -32.34125 L 65.749156 -32.34125 L 65.749156 -3.993594 L 37.4015 -3.993594 Z M 37.4015 -32.34125 " transform="matrix(1,0,0,-1,46.786,21.19)"/>
 </g>
 </svg>
