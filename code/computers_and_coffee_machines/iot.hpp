@@ -1,11 +1,11 @@
 #pragma once
 #include <vector>
-
+#include <random>
 
 namespace iot {
 
   static int n_levels_ = 64;
-  static int n_rooms_ = 1 << 20;
+  static int n_rooms_ = 1 << 18;
 
   
   static int n_rooms(){
@@ -21,9 +21,11 @@ namespace iot {
   }
   
   static std::vector<int> fill_devices(){
+    std::srand(size());
+    
     std::vector<int> value(size());
     for (int & i : value)
-      i = 42;//TODO insert RNG here
+      i = (std::rand()/RAND_MAX) > .5 ? 1 : 0;
     return value;
   }
   

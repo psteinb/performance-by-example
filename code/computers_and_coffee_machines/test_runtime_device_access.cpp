@@ -7,6 +7,9 @@
 #include "gtest/gtest.h"
 #include "iot.hpp"
 
+using fp_microseconds_t = std::chrono::duration<double, std::chrono::microseconds::period>;
+using fp_nanoseconds_t = std::chrono::duration<double, std::chrono::nanoseconds::period>;
+static int repeats = 10;
 
 std::vector<int> synthetic_devices(const size_t& _size) {
 
@@ -27,7 +30,6 @@ std::size_t count_active() {
       sum += iot::active_devices(level,room);
     }
   }
-
   return sum;
 }
 
@@ -48,27 +50,14 @@ TEST(Call_Devices, runtime_real) {
 
   auto t_start = std::chrono::high_resolution_clock::now();
   size_t n_active = 0;
-  for(int i =0;i<10;++i)
+  for(int i =0;i<repeats;++i)
     n_active = count_active();
   auto t_end = std::chrono::high_resolution_clock::now();
-  double time_diff_mus = std::chrono::duration_cast<std::chrono::nanoseconds>(t_end - t_start).count();
-
-  EXPECT_GT(time_diff_mus,0);
-  std::cout << "real    : " << time_diff_mus << "\n";
+  double time_diff_mus = (std::chrono::nanoseconds(t_end - t_start)).count();
+  time_diff_mus /= repeats;
   
-}
-
-TEST(Call_Devices, runtime_fast) {
-
-  auto t_start = std::chrono::high_resolution_clock::now();
-  size_t n_active = 0;
-  for(int i =0;i<10;++i)
-    n_active = count_active_fast();
-  auto t_end = std::chrono::high_resolution_clock::now();
-  double time_diff_mus = std::chrono::duration_cast<std::chrono::nanoseconds>(t_end - t_start).count();
-
   EXPECT_GT(time_diff_mus,0);
-  std::cout << "real    : " << time_diff_mus << "\n";
+  std::cout << "real    : " << time_diff_mus << " ns\n";
   
 }
 
@@ -79,15 +68,33 @@ TEST(Call_Devices, runtime_training) {
   auto t_start = std::chrono::high_resolution_clock::now();
   size_t n_active_synthetic = 0;
 
-  for(int i =0;i<10;++i)
+  for(int i =0;i<repeats;++i)
     for( size_t i = 0;i<training_data.size();++i)
       n_active_synthetic += training_data[i];
-	
+
   auto t_end = std::chrono::high_resolution_clock::now();
-  double time_diff_mus = std::chrono::duration_cast<std::chrono::nanoseconds>(t_end - t_start).count();
+  double time_diff_mus = std::chrono::duration_cast<std::chrono::nanoseconds>(t_end - t_start).count()/repeats;
   
   EXPECT_GT(time_diff_mus,0);
-  std::cout << "training: " << time_diff_mus << "\n";
+  std::cout << "training: " << time_diff_mus // << ", for " << iot::n_rooms()*iot::n_levels()*sizeof(int)/(1024) <<" KB of items
+	    << " ns\n";
+  
+}
+
+
+TEST(Call_Devices, runtime_fast) {
+
+  auto t_start = std::chrono::high_resolution_clock::now();
+
+  size_t n_active = 0;
+  for(int i =0;i<repeats;++i)
+    n_active = count_active_fast();
+  
+  auto t_end = std::chrono::high_resolution_clock::now();
+  double time_diff_mus = std::chrono::duration_cast<std::chrono::nanoseconds>(t_end - t_start).count()/repeats;
+
+  EXPECT_GT(time_diff_mus,0);
+  std::cout << "fast    : " << time_diff_mus << " ns\n";
   
 }
 
