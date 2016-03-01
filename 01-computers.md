@@ -2,7 +2,7 @@
 layout: page
 title: Computers and Coffee Machines
 subtitle: A code-based introduction to memory hierarchy
-minutes: 20
+minutes: 40
 ---
 > ## Learning Objectives {.objectives}
 >
@@ -16,7 +16,7 @@ Lola is first asked to look at some code that is supposed to obtain the number o
 
 In order to access the status of any device in room 12 on the first floor, the following method has to be called.
 
-~~~ {.c}
+~~~ {.cpp}
 int floor = 1;
 int room = 11;
 auto room_ref = iot::devices(floor,room)
@@ -25,7 +25,7 @@ int answer = room_ref.active_devices()
 
 She heard from a friend of hers, that writing tests before any implementation is added is the latest and greatest software development method in the industry. As she wants to keep her job chances high, she decides to try this method and train this way of writing code on the job.
 
-~~~ {.c}
+~~~ {.cpp}
 #include "iot.hpp"
 #include "gtest/gtest.h"
 
@@ -55,7 +55,7 @@ $ ./test_device_access
 
 She will add some more tests now, to explore the API of the `iot` namespace and it's features. In any case, she soon turns to the task at hand. She wants to sum up the number of online devices. This needs to be performed very quickly as the information will be displayed in real-time in the foyer of the institute. If something hangs there, the IOTs good name is at stake. 
 
-~~~ {.c}
+~~~ {.cpp}
 TEST(Call_Devices, Sum_of_active) {
 
 	size_t sum = 0;
@@ -85,7 +85,7 @@ This is such a common operation in her project, that she decides to put it into 
 
 Lola creates a new unit test to measure the performace of her implementation.
 
-~~~ {.c}
+~~~ {.cpp}
 #include <chrono>
 
 std::size_t count_active() {
@@ -111,36 +111,54 @@ TEST(Call_Devices, runtime_comparison) {
 }
 ~~~
 
-While writing the test, she discovers that a single runtime will not help her very much. As each individual room is independent of each other, the most optimal runtime should be given by the same operation but performed on a 1D array. She decides to compare the runtime of the `count_active` function to just summing up a 1D array of the same size than the number of devices in house.
+While writing the test, she discovers that a single runtime appears to vary from execution to execution. She hence decides to run each function call for about 10 times.
 
-~~~ {.c}
+> ## Computers are stochastic machines {.callout}
+>
+> Even though the hardware and wiring of the computer (laptop or workstation) under your fingers is static and "deterministic", the signals produced by such a complex system yield a considerable stochastic portion. Besides the noise produced by every transistor in your machine, while you perform a single time measurement inside a given process, many more processes are running inside the OS. Thus, if you want to judge the sustainable performance of a piece of code, conduct more than one measurements and record the results. Given the environment and purpose of a measurement, use statistical meaningful observables like mean, median and standard deviation to quantify runtimes.
+>
+> For library support, try (google/benchmark)[https://github.com/google/benchmark] library.
+
+As each individual room is independent of each other, the most optimal runtime should be given by the same operation but performed on a 1D array (a 2D array is nothing else than a 1D). She decides to compare the runtime of the `count_active` function to just summing up a 1D array of the same size than the number of devices in house.
+
+~~~ {.cpp}
 #include <chrono>
 
-TEST(Call_Devices, runtime_comparison) {
+TEST(Call_Devices, runtime_real) {
 
-  //real-life timing
   auto t_start = std::chrono::high_resolution_clock::now();
-  size_t n_active = count_active();
+  size_t n_active = 0;
+  for(int i =0;i<repeats;++i)
+    n_active = count_active();
   auto t_end = std::chrono::high_resolution_clock::now();
-  double time_diff_ms = std::chrono::duration_cast<std::chrono::microseconds>(t_end - t_start).count();
+  double time_diff_mus = (std::chrono::nanoseconds(t_end - t_start)).count();
+  time_diff_mus /= repeats;
+  
+  EXPECT_GT(time_diff_mus,0);
+  std::cout << "real    : " << time_diff_mus << " ns\n";
+  
+}
 
-  //generate training data
+
+TEST(Call_Devices, runtime_training) {
+
   std::vector<int> training_data = synthetic_devices(iot::n_rooms()*iot::n_levels());
-  t_start = std::chrono::high_resolution_clock::now();
+  auto t_start = std::chrono::high_resolution_clock::now();
   size_t n_active_synthetic = 0;
 
-  for( size_t i = 0;i<training_data.size();++i)
-    n_active_synthetic += training_data[i];
-	
-  t_end = std::chrono::high_resolution_clock::now();
-  double synthetic_diff_ms = std::chrono::duration_cast<std::chrono::microseconds>(t_end - t_start).count();
+  for(int i =0;i<repeats;++i)
+    for( size_t i = 0;i<training_data.size();++i)
+      n_active_synthetic += training_data[i];
 
-  //unit tests that fix the expected performace
-  EXPECT_LT(synthetic_diff_ms,time_diff_ms);
-  ASSERT_GT(synthetic_diff_ms,0);
-  EXPECT_GT(synthetic_diff_ms/time_diff_ms,.90);
-	
+  auto t_end = std::chrono::high_resolution_clock::now();
+  double time_diff_mus = std::chrono::duration_cast<std::chrono::nanoseconds>(t_end - t_start).count()/repeats;
+  
+  EXPECT_GT(time_diff_mus,0);
+  std::cout << "training: " << time_diff_mus // << ", for " << iot::n_rooms()*iot::n_levels()*sizeof(int)/(1024) <<" KB of items
+	    << " ns\n";
+  
 }
+
 ~~~
 
 Lola sets herself the goal, that her implementation is as good as traversing a linear array by 10%. This is an ambitious goal, but she is aware of the fact that however the internal data structure of `iot` is laid out, it must boil down to a sequence of 1D arrays as this is the structure of the memory that is built into computers these days. She is quite surprise when she observes the results:
@@ -148,27 +166,44 @@ Lola sets herself the goal, that her implementation is as good as traversing a l
 
 ~~~ {.output}
 $ ./test_runtime_device_access
-[==========] Running 1 test from 1 test case.
-[----------] Global test environment set-up.
-[----------] 1 test from Call_Devices
-[ RUN      ] Call_Devices.runtime_comparison
-real 724, synth 338      = 2.14201
-test_runtime_device_access.cpp:57: Failure
-Expected: (synthetic_diff_ms/time_diff_ms) > (.90), actual: 0.466851 vs 0.9
-[  FAILED  ] Call_Devices.runtime_comparison (3 ms)
-[----------] 1 test from Call_Devices (3 ms total)
-
-[----------] Global test environment tear-down
-[==========] 1 test from 1 test case ran. (3 ms total)
-[  PASSED  ] 0 tests.
-[  FAILED  ] 1 test, listed below:
-[  FAILED  ] Call_Devices.runtime_comparison
-
- 1 FAILED TEST
+[==========] Running 2 tests from 1 test case.
+...
+real    : 10.1 ns
+...
+training: 5 ns
+...
+[  PASSED  ] 2 tests.
 ~~~
 
-Wow! This is quite far from her goal. The time difference amounts up to `46.6851%`! That is a lot. Another thing she observes is, that everytime she runs the test suite, she gets a different result. A computer as such is a non-deterministic system and hence will never provide the exact same runtime. The stochastic variation maybe tiny and thus negligable in real life, but it is there. As the number of devices available is not very big ``, the resulting time differences are small as well and hence will fluctuate. For real life measurements, a repitition of the timing is needed to make the measurement independent of these statistical effects. As the time difference is so large now, we will skip this at this point in favor of brevity.
+Wow! This is quite far from her goal. The time difference amounts up to about `50%`! That is a lot. Looking at her implementation again, she discovers that she was traversed the array of device status information in a inconvenient way. The 2D array that mimicks the status of every device contains every room of one level, then all the rooms of the next one, etc. But the double loop to traverse it, looped first through all rooms but  the inner loop went through all the levels.
 
+![](figures/wrong_cache_access_i0.svg)
+![Item load in red, cache line load in orange](figures/wrong_cache_access_i1.svg)
+
+Modern CPUs typically have a 3 level cache hierarchy built into them. The caches are high bandwidth but low volume volative memories that are printed on die. The motivation behind caches is to reread/rewrite items that are used often by the CPU at high speed. Once they are not needed anymore, they can be written to RAM eventually. As the CPU clock frequency is typically higher than the access to RAM, this helps provide enough data for the CPU to work on without long periods of idle time.
+
+Optimally, the array should be traversed in the direction that the CPU puts data into cache lines.
+
+![](figures/right_cache_access_i0.svg)
+![](figures/right_cache_access_i1.svg)
+![Item load in red, cache line load in orange](figures/right_cache_access_i2.svg)
+
+In the illustrations above, the traversal of the loops first goes through all items that are in cache and then continues onto data that outside of it. Upon reaching the end of the cacheline, the hardware will put new data into the caches.
+
+Lola changes her application accordingly and sees a runtime that is equivalent to looping through a 1D array.
+
+~~~ {.output}
+$ ./test_runtime_device_access
+[==========] Running 3 tests from 1 test case.
+...
+real    : 9.9 ns
+...
+fast    : 4 ns
+...
+training: 4 ns
+...
+[  PASSED  ] 3 tests.
+~~~
 
 > ## Prope your Metal {.challenge}
 >
