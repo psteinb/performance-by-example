@@ -2,6 +2,7 @@
 #include <cmath>
 #include <chrono>
 #include <thread>
+#include <functional>
 
 #include "gtest/gtest.h"
 #include "info.hpp"
@@ -79,19 +80,22 @@ TEST(power_total,non_zero) {
 
 TEST(power_total,diff_serial) {
 
-  auto initial_device_info = device_info;
+  std::vector<device_t> initial_device_info = iot::device_info;
   std::vector<device_t> delta(iot::size());
   iot::update_device_info(device_info);
-  
+  std::vector<device_t> updated_device_info = iot::device_info;
+    
   auto start_t = std::chrono::high_resolution_clock::now();
-  for(int i = 0;i<repeats;++i)
-    std::transform(initial_device_info.begin(),
-		   initial_device_info.end(),
-		   device_info.begin(),
-		   delta.begin(),
-		   [&](const device_t& _lhs, const device_t& _rhs){
-		     return _lhs - _rhs;
-		   });
+  for(int i = 0;i<repeats;++i){
+    // std::transform(initial_device_info.begin(),
+    // 		   initial_device_info.end(),
+    // 		   device_info.begin(),
+    // 		   delta.begin(),
+    // 		   std::minus<iot::device_t>()
+    // 		   );
+    for( size_t i = 0; i<iot::size();++i)
+      delta[i] = initial_device_info[i] - updated_device_info[i];
+  }
   auto end_t = std::chrono::high_resolution_clock::now();
   double time_diff_mus = (fp_microseconds_t(end_t - start_t)).count();
   
@@ -102,13 +106,14 @@ TEST(power_total,diff_serial) {
 
 TEST(power_total,diff_parallel) {
 
-  auto initial_device_info = device_info;
+  std::vector<device_t> initial_device_info = iot::device_info;
   std::vector<device_t> delta(iot::size());
   iot::update_device_info(device_info);
-  
+  std::vector<device_t> updated_device_info = iot::device_info;
+    
   auto start_t = std::chrono::high_resolution_clock::now();
   for(int i = 0;i<repeats;++i){
-    parallel_difference(initial_device_info,device_info,delta);
+    parallel_difference(initial_device_info,updated_device_info,delta);
   }
   auto end_t = std::chrono::high_resolution_clock::now();
   double time_diff_mus = (fp_microseconds_t(end_t - start_t)).count();
@@ -122,10 +127,12 @@ TEST(power_total,diff_parallel) {
 
 TEST(power_total,parallel_equals_sequential) {
 
-  auto initial_device_info = device_info;
+  
+  std::vector<device_t> initial_device_info = iot::device_info;
+  iot::update_device_info(device_info);
+  std::vector<device_t> updated_device_info = iot::device_info;
   std::vector<device_t> par_delta(iot::size());
   std::vector<device_t> seq_delta(iot::size());
-  iot::update_device_info(device_info);
   
   parallel_difference(initial_device_info,device_info,par_delta);
   
