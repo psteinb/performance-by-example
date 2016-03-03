@@ -1,0 +1,149 @@
+#define test_diff_to_previous_day
+#include <cmath>
+#include <chrono>
+#include <thread>
+
+#include "gtest/gtest.h"
+#include "info.hpp"
+
+using fp_microseconds_t = std::chrono::duration<double, std::chrono::microseconds::period>;
+using fp_nanoseconds_t = std::chrono::duration<double, std::chrono::nanoseconds::period>;
+static int repeats = 10;
+
+using namespace iot;
+
+double sum_power(const std::vector<device_t>& _data){
+
+  double value = 0;
+
+  for(const device_t& item : _data)
+    value += item.power_consumption;
+
+  return value;
+}
+
+void diff_in_thread(const std::vector<device_t>& _lhs,
+		    const std::vector<device_t>& _rhs,
+		    std::vector<device_t>&_result,
+		    size_t thread_id){
+
+  const size_t items_per_thread = (_lhs.size() + std::thread::hardware_concurrency() - 1)/std::thread::hardware_concurrency();
+  const size_t offset = thread_id*items_per_thread;
+
+  for(size_t offset = thread_id*items_per_thread;
+      offset<((thread_id+1)*items_per_thread);
+      ++offset)
+    {
+      _result[offset] = _lhs[offset] - _rhs[offset];
+    }
+  
+}
+
+void parallel_difference(const std::vector<device_t>& _lhs,
+			 const std::vector<device_t>& _rhs,
+			 std::vector<device_t>&_result){
+
+  if(_result.size()!=_rhs.size() || _result.empty())
+    _result.resize(_rhs.size());
+  
+  std::vector<std::thread> workers;
+  
+  for(size_t tid = 0;tid<std::thread::hardware_concurrency();++tid){
+    workers.push_back(std::thread(diff_in_thread,
+				  std::ref(_lhs),
+				  std::ref(_rhs),
+				  std::ref(_result),
+				  tid
+				  )
+		      );
+  }
+
+  for(auto& w : workers)
+    w.join();
+    
+}
+
+
+TEST(power_total,non_zero_device_infos_available) {
+  EXPECT_GT(iot::device_info.size(),0);
+  
+}
+
+TEST(power_total,non_zero) {
+
+  double sum = sum_power(iot::device_info);
+  
+  EXPECT_GT(sum,0.);
+  
+}
+
+TEST(power_total,diff_serial) {
+
+  auto initial_device_info = device_info;
+  std::vector<device_t> delta(iot::size());
+  iot::update_device_info(device_info);
+  
+  auto start_t = std::chrono::high_resolution_clock::now();
+  for(int i = 0;i<repeats;++i)
+    std::transform(initial_device_info.begin(),
+		   initial_device_info.end(),
+		   device_info.begin(),
+		   delta.begin(),
+		   [&](const device_t& _lhs, const device_t& _rhs){
+		     return _lhs - _rhs;
+		   });
+  auto end_t = std::chrono::high_resolution_clock::now();
+  double time_diff_mus = (fp_microseconds_t(end_t - start_t)).count();
+  
+  EXPECT_GT(time_diff_mus,0.);
+  for(size_t i = 0;i<20;++i)
+    EXPECT_NE(delta[i].power_consumption,0);
+}
+
+TEST(power_total,diff_parallel) {
+
+  auto initial_device_info = device_info;
+  std::vector<device_t> delta(iot::size());
+  iot::update_device_info(device_info);
+  
+  auto start_t = std::chrono::high_resolution_clock::now();
+  for(int i = 0;i<repeats;++i){
+    parallel_difference(initial_device_info,device_info,delta);
+  }
+  auto end_t = std::chrono::high_resolution_clock::now();
+  double time_diff_mus = (fp_microseconds_t(end_t - start_t)).count();
+  
+  EXPECT_GT(time_diff_mus,0.);
+  for(size_t i = 0;i<20;++i)
+    EXPECT_NE(delta[i].power_consumption,0);
+
+  
+}
+
+TEST(power_total,parallel_equals_sequential) {
+
+  auto initial_device_info = device_info;
+  std::vector<device_t> par_delta(iot::size());
+  std::vector<device_t> seq_delta(iot::size());
+  iot::update_device_info(device_info);
+  
+  parallel_difference(initial_device_info,device_info,par_delta);
+  
+  std::transform(initial_device_info.begin(),
+		 initial_device_info.end(),
+		 device_info.begin(),
+		 seq_delta.begin(),
+		 [&](const device_t& _lhs, const device_t& _rhs){
+		   return _lhs - _rhs;
+		 });
+  
+  for(size_t i = 0;i<20;++i)
+    EXPECT_FLOAT_EQ(par_delta[i].power_consumption,seq_delta[i].power_consumption);
+
+}
+
+
+int main(int argc, char **argv) {
+  ::testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
+}
