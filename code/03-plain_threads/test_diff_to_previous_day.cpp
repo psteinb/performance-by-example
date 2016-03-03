@@ -13,15 +13,6 @@ static int repeats = 10;
 
 using namespace iot;
 
-double sum_power(const std::vector<device_t>& _data){
-
-  double value = 0;
-
-  for(const device_t& item : _data)
-    value += item.power_consumption;
-
-  return value;
-}
 
 void diff_in_thread(const std::vector<device_t>& _lhs,
 		    const std::vector<device_t>& _rhs,
