@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Plain Threads
-minutes: 20
+minutes: 40
 ---
 
 > ## Learning Objectives {.objectives}

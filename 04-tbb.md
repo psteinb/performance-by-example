@@ -8,5 +8,6 @@ minutes: 60
 >
 > * parallel_for to add two large vectors
 > * parallel_reduce to sum up one vector
+> * understand tbb OO model
 > * pros/cons of implicit multi-threading
 
