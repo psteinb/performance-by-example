@@ -87,14 +87,12 @@ TEST(power_total,diff_serial) {
     
   auto start_t = std::chrono::high_resolution_clock::now();
   for(int i = 0;i<repeats;++i){
-    // std::transform(initial_device_info.begin(),
-    // 		   initial_device_info.end(),
-    // 		   device_info.begin(),
-    // 		   delta.begin(),
-    // 		   std::minus<iot::device_t>()
-    // 		   );
-    for( size_t i = 0; i<iot::size();++i)
-      delta[i] = initial_device_info[i] - updated_device_info[i];
+    std::transform(initial_device_info.begin(),
+    		   initial_device_info.end(),
+    		   device_info.begin(),
+    		   delta.begin(),
+    		   std::minus<iot::device_t>()
+    		   );
   }
   auto end_t = std::chrono::high_resolution_clock::now();
   double time_diff_mus = (fp_microseconds_t(end_t - start_t)).count();
