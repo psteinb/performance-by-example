@@ -6,7 +6,7 @@ author: Peter Steinbach
 
 > ## Prerequisites {.prereq}
 >
-> Learners are expected to be literate C++ programmers both in terms of syntax and the standard library (STL). That means, they are expected to be able to write a function and call it, using STL containers and algorithms. They are expected to be able to write simple classes and exploiting inheritance. Finally, the following material relies on the fact that learners can compile (possibly link) simple programs on the command line and use libraries in these apps as well.
+> Learners are expected to be literate C++ programmers both in terms of syntax and the standard library (STL). That means, they are expected to be able to write a function and call it, use STL containers and algorithms. They are expected to be able to write simple classes with and without inheritance. This material relies on the fact that learners can compile (possibly link) simple programs on the command line, possibly linking in dynamically loaded or shared libraries.
 
 ## Topics
 
