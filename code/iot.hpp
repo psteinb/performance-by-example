@@ -16,6 +16,11 @@ namespace iot {
     return n_levels_;
   }
 
+  static void reset_building(int level_number, int room_number){
+    n_levels_ = level_number;
+    n_rooms_ = room_number;
+  }
+  
   static int size(){
     return n_levels_*n_rooms_;
   }
