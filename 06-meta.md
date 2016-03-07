@@ -6,7 +6,6 @@ minutes: 60
 
 > ## Learning Objectives {.objectives}
 >
-> * generality and code
-> * variadic templates
-> * loop unrolling and the like
+> * policy-based design
+> * variadic templates and loop unrolling
 
