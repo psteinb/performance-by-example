@@ -1,8 +1,9 @@
 ---
 layout: page
-title: Fast and Slow Inheritance
+title: Fast and Slow Structures
 minutes: 40
 ---
+
 > ## Learning Objectives {.objectives}
 >
 > * unnecessary use of pointer indirection

@@ -22,8 +22,7 @@ namespace iot {
       html_end(" K</em>"){}
 
     int prepare() const {
-      
-      // std::this_thread::sleep_for(dur);
+
       return val.size();
     }
   };
@@ -55,7 +54,6 @@ namespace iot {
     temperature_view temp;
     power_view pow;
     
-
     entity():
       temp(0),
       pow(0)
