@@ -1,43 +1,53 @@
-#define test_templates_intro
 
 #include <vector>
 #include <random>
 
 #include "gtest/gtest.h"
+#include "stats_fixture.hpp"
 
-struct float_ops {
+struct statistics_observable {
   
-  virtual float update_by(float& _data) = 0;
+  virtual void update_by(float& _data) = 0;
+  virtual void update_by(int& _data) = 0;
 
-  virtual ~float_ops(){};
+  virtual ~statistics_observable(){};
 };
 
-struct power_sum : pulic float_ops {
+struct mean_fp32 : public statistics_observable {
 
-  float result = 0.;
+  float		result = 0.;
+  std::size_t	size_sample = 0;
 
-  ~power_sum(){};
+  ~mean_fp32(){};
   
-  virtual float update_by(float& _data){
-    return (result += _data);
+  void update_by(float& _data) final override {
+    (result += _data);
+    size_sample++;
   };
 
+  void update_by(int& _data) final override {
+    float casted = float(_data);
+    return update_by(casted);
+  };
+
+  float value() const {
+    return result/size_sample;
+  }
+  
+
 };
 
 
-TEST(templates_intro,generic_functions) {
+TEST_F(stats_fixture,mean_example) {
 
-  std::vector<float> payload(1 << 15);
-  std::srand(0);
-  for(float & fl : payload)
-    fl = std::rand()/RAND_MAX;
 
-  power_sum total;
-  for(float & fl : payload)
-    total.update_by(fl);
+  mean_fp32 my_mean;
+  for(float & fl : fp_data)
+    my_mean.update_by(fl);
 
-  
-  EXPECT_GT(total,0);
+  const float mean = my_mean.value();
+  EXPECT_GT(mean,fp_mean - fp_sigma);
+  EXPECT_LT(mean,fp_mean + fp_sigma);
   
 }
 
