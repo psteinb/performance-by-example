@@ -4,6 +4,7 @@ title: Computers and Coffee Machines
 subtitle: A code-based introduction to memory hierarchy
 minutes: 40
 ---
+
 > ## Learning Objectives {.objectives}
 >
 > * Reminder of Unit Tests
@@ -205,6 +206,18 @@ training: 4 ns
 [  PASSED  ] 3 tests.
 ~~~
 
+Very interesting! So the way we traverse a vector or buffer does make a difference, especially when we move to large buffer sizes. Why is that? The reason for this boils down to the observation that
+
+> **Computers are no coffee machines!**
+
+For most every-day applications, this is of no importance though. If you click a button, it doesn't matter if the response from the computer comes at 100 Hz or 1000 Hz, either value is well below what your eye can distinguish. However, in data analysis, simulation and advanced visualisation things start to add up. Just like in this case, where we had a lot of items that needed to be traversed. With this, the very naive view of the computer internals falls apart and knowledge of the concepts behind computer architecture become important.
+
+<div style="float: left;">
+![The DRAM gap in modern CPU architectures.](figures/dram_gap.svg)
+</div>
+
+In the Moore's law era, the bandwidth at which memory is accessed didn't scale upwards as fast as the clock frequency of the CPUs. In order to hide this, a layered set of intermediate caches were introduced that can only hold a very limited number of data items but offer a very high bandwidth. So if a lot of data is needed, the hardware will (pre)fetch data into L3 cache when required, then load parts of it L2 and L1 until it finally can be moved into the registers that hold the input/output data of actual arithmetic or boolean arithmetic. 
+
 > ## Prope your Metal {.challenge}
 >
 > Take the time and find out:
@@ -216,3 +229,16 @@ training: 4 ns
 > 5. What size the Level3 cache has?
 >
 > Share your results in the Etherpad.
+
+> ## Show me your streams and I show you who you are {.challenge}
+>
+> Download the stream benchmark from [this ftp mirror](http://www.cs.virginia.edu/stream/FTP/Code/). Once compiled, the stream benchmark performs 4 simple operations (at best in parallel). All of which turn one or two input vectors/buffers into one result vector/buffer item-by-item. All of these operations are very sensitive to which the fact in which part of the memory they operate on. That is why, the stream benchmark is commonly used to validate or compare hardware.
+>
+> Look inside stream.c and find the preprocessor variable STREAM_ARRAY_SIZE. By default, it contains the size of the vector/buffer of double precision numbers. 
+>
+> 1. Run the stream benchmark with STREAM_ARRAY_SIZE being as large as 50% of your L1 cache.
+> 1. Run the stream benchmark with STREAM_ARRAY_SIZE being as large as 50% of your L2 cache.
+> 1. Run the stream benchmark with STREAM_ARRAY_SIZE being as large as 50% of your L3 cache.
+> 1. Run the stream benchmark with STREAM_ARRAY_SIZE being as large as 4 times the size of your L3 cache.
+> 
+> Share your results in the Etherpad and discuss them.
