@@ -16,3 +16,4 @@ _site
 /code/03-plain_threads/test_diff_to_previous_day
 /code/04-threads-for-the-rest-of-us/test_parallel_delta
 /code/04-threads-for-the-rest-of-us/test_parallel_reduce
+perf.data*
