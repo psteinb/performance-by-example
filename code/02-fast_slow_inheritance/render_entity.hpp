@@ -1,5 +1,6 @@
-#ifndef __ENTITY_HPP__
-#define __ENTITY_HPP__
+#ifndef __RENDER_ENTITY_HPP__
+#define __RENDER_ENTITY_HPP__
+
 #include <string>
 #include <iostream>
 #include <chrono>
@@ -49,19 +50,19 @@ namespace iot {
   };
 
   
-  struct entity {
+  struct render_entity {
 
     temperature_view temp;
     power_view pow;
     
-    entity():
+    render_entity():
       temp(0),
       pow(0)
     {
       
     }
     
-    entity(const device_t& _dev):
+    render_entity(const device_t& _dev):
       temp(_dev.temperature_kelvin),
       pow(_dev.power_consumption)
     {
