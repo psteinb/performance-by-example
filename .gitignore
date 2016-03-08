@@ -8,3 +8,11 @@ CONDUCT.html
 *.pyc
 _site
 .DS_Store
+*.aux
+*.log
+/code/01-computers_and_coffee_machines/test_device_access
+/code/01-computers_and_coffee_machines/test_runtime_device_access
+/code/02-fast_slow_inheritance/test_runtime_device_display
+/code/03-plain_threads/test_diff_to_previous_day
+/code/04-threads-for-the-rest-of-us/test_parallel_delta
+/code/04-threads-for-the-rest-of-us/test_parallel_reduce
