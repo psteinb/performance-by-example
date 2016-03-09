@@ -17,7 +17,7 @@ namespace iot {
     float power_consumption;
 
     
-    device_t& operator-(const device_t& _rhs) const {
+    device_t operator-(const device_t& _rhs) const {
 
       device_t value;
       value.temperature_kelvin = temperature_kelvin - _rhs.temperature_kelvin;
@@ -27,6 +27,8 @@ namespace iot {
       value.mac_address      = mac_address      != _rhs.mac_address      ? 0 : _rhs.mac_address    ;
       
       value.power_consumption = power_consumption - _rhs.power_consumption;
+
+      return value;
     }
 
   };

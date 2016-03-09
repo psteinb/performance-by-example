@@ -3,6 +3,7 @@
 #include <chrono>
 #include <thread>
 #include <functional>
+#include <algorithm>
 
 #include "gtest/gtest.h"
 #include "info.hpp"
@@ -61,13 +62,23 @@ TEST(power_total,non_zero_device_infos_available) {
   
 }
 
-TEST(power_total,non_zero) {
 
-  double sum = sum_power(iot::device_info);
+TEST(power_total,diff_in_thread) {
+
+  std::vector<device_t> initial_device_info = iot::device_info;
+  std::vector<device_t> delta(iot::size());
+  iot::update_device_info(device_info);
+  std::vector<device_t> updated_device_info = iot::device_info;
   
-  EXPECT_GT(sum,0.);
-  
+  diff_in_thread(initial_device_info,updated_device_info,
+		 delta, 0);
+
+  EXPECT_NE(delta.front().power_consumption,0);
+  EXPECT_LT(delta.back().power_consumption,1e-3);
+  EXPECT_FLOAT_EQ(delta.front().power_consumption,initial_device_info.front().power_consumption);
+  EXPECT_NE(delta.back().power_consumption,initial_device_info.back().power_consumption);
 }
+
 
 TEST(power_total,diff_serial) {
 
@@ -87,7 +98,7 @@ TEST(power_total,diff_serial) {
   }
   auto end_t = std::chrono::high_resolution_clock::now();
   double time_diff_mus = (fp_microseconds_t(end_t - start_t)).count();
-  
+    
   EXPECT_GT(time_diff_mus,0.);
   for(size_t i = 0;i<20;++i)
     EXPECT_NE(delta[i].power_consumption,0);
@@ -138,8 +149,17 @@ TEST(power_total,parallel_equals_sequential) {
 
 }
 
+// TEST(power_total,non_zero) {
+
+//   double sum = sum_power(iot::device_info);
+  
+//   EXPECT_GT(sum,0.);
+  
+// }
+
 
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }
+
