@@ -45,8 +45,17 @@
 
            \node (dots) [font=\Huge,very thick,right] at($(thread_\i.east) + (0,-1)$) {\dots};
 
-           % \draw (thread_\i.south) arc [start angle=2400, end angle=300, radius=50mm];
+           \draw ($(thread_\i.north) + (-3.5,-2.4)$) arc [very thick,start angle=240, end angle=300, radius=70mm];
+           \node (plus_\i) [font=\Huge] at($(thread_\i.south) + (0,-2)$) {$+$};
+           \node (partial_\i) [font=\Huge,below] at($(plus_\i.south)$) {$partial_\i$};
          }
+         
+         \node (subtotal_0) [font=\Huge] at($(partial_0)!.5!(partial_1) - (0,2)$) {subtotal$_0$}; 
+         \node (subtotal_1) [font=\Huge] at($(partial_2)!.5!(partial_3) - (0,2)$) {subtotal$_1$}; 
+         \draw (partial_0.south) -- (subtotal_0.north) -- (partial_1.south);
+         \draw (partial_2.south) -- (subtotal_1.north) -- (partial_3.south);
+         \node (total) [font=\Huge] at($(subtotal_0)!.5!(subtotal_1) - (0,3)$) {total}; 
+         \draw (subtotal_0.south) -- (total.north) -- (subtotal_1.south);
 
 \end{tikzpicture}
 \end{document}

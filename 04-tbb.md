@@ -26,7 +26,7 @@ Lola is quite happy with the plain threads implementation that she has come up w
 
 Starting out with a test again, she has to update what had considerably.
 
-```
+~~~~~~ {.cpp}
 #include "tbb/parallel_for.h"
 #include "tbb/blocked_range.h"
 
@@ -51,7 +51,7 @@ TEST(power_difference,parallel) {
   
   }
   
-```
+~~~~~~
 
 There are a couple of things to observe here:
 
@@ -156,6 +156,6 @@ There are some piculiarities to take note of here:
 
 So what's going on here? `parallel_reduce` is a variant of the map-reduce pattern even though we do not have a mapping step here. This idiom is very common not only in implicit multi-threading libraries/frameworks.
 
-**figure goes here**
+![parallel reduce operation using the sum operator](figures/parallel_reduce.svg)
 
 First, partial results are computed on a per data chunk aka per thread basis. After this is complete (there is a barrier inside TBB to ensure this), the individual partial results are summed by means of the `join` function. 
