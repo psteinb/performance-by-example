@@ -41,8 +41,12 @@ check: $(ALL_MD)
 clean :
 	@rm -rf $$(find . -name '*~' -print)
 
+## code_package  : create tarball with code for learners
+code_package :
+	@make -C code package
+
 ## preview  : Build website locally for checking.
-preview : $(DST_ALL)
+preview : $(DST_ALL) code_package 
 
 # Pattern to build a generic page.
 %.html : %.md _layouts/page.html $(FILTERS)

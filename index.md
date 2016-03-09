@@ -19,6 +19,7 @@ author: Peter Steinbach
 
 ## Other Resources
 
+*   [Code](code/performance-by-example-code.tgz)
 *   [Reference](reference.html)
 *   [Discussion](discussion.html)
 *   [Instructor's Guide](instructors.html)
