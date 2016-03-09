@@ -210,4 +210,4 @@ Wehn lola inserts time measurements, she discovers the immense speed-up that she
 
 > ## Continue to design for Lola {.challenge}
 >
-> Take the unit tests that were created during this lesson. Rewrite the render_entity class (or define a client class called render_entity_system) so that is becomes a structure of arrays. Measure again!
+> Take the unit tests that were created during this lesson. Rewrite the render_entity class (or define a client class called render_entity_system) so that is becomes a structure of arrays. Measure again! Discuss with a colleaque what the change in design brought in terms of flexibility, testability and runtime. Which version would you choose?
