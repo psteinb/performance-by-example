@@ -24,4 +24,8 @@ The lesson is taught in an intructor-guided way. An IDE/editor is opened where t
 
 ## Frequently Argued Issues (FAI)
 
+None so far.
+
 ## Solutions to exercises
+
+Can be found in dedicated unit test files in the code/ directory of the [repo](https://github.com/psteinb/performance-by-example/tree/gh-pages/code).
