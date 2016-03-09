@@ -50,49 +50,20 @@ struct power_sum{
 
   ~power_sum(){}
 
-  void operator()(const tbb::blocked_range<device_t*>& range) {
+  void operator()(const tbb::blocked_range<iot::device_t*>& range) {
     
-    double local = 0;
+    double local = result;
+    device_t* i = range.begin();
+    device_t* end = range.end();
     
-    for( device_t* i=range.begin(); i!=range.end(); ++i )
+    for( ;i!=end; ++i )
       local += i->power_consumption;
 
-    result += local;
+    result = local;
 
   }
 
   void join(power_sum& _rhs){ result += _rhs.result; }
-};
-
-struct index_based_sum{
-
-  double result;
-  std::vector<iot::device_t>* data;
-
-  index_based_sum(std::vector<iot::device_t>* _data):
-    result(0),
-    data(_data)
-  {}
-  
-  index_based_sum(index_based_sum& _rhs, tbb::split ):
-    result(0),
-    data(_rhs.data)
-  {}
-
-  ~index_based_sum(){}
-
-  void operator()(const tbb::blocked_range<size_t>& range) {
-    
-    double local = 0;
-    
-    for( size_t i=range.begin(); i!=range.end(); ++i )
-      local += (*data)[i].power_consumption;
-
-    result += local;
-
-  }
-
-  void join(index_based_sum& _rhs){ result += _rhs.result; data = _rhs.data; }
 };
 
 
@@ -107,7 +78,6 @@ TEST(power_total,serial) {
   auto start_t = std::chrono::high_resolution_clock::now();
   for(int i = 0;i<repeats;++i){
     sum = serial_power_sum(iot::device_info);
-    
   }
   auto end_t = std::chrono::high_resolution_clock::now();
 
@@ -124,39 +94,38 @@ TEST(power_total,parallel) {
   tbb::blocked_range<device_t*> brange(&dinfo[0],
 				       &dinfo[0] + size());
 
-  power_sum functor;
-
-  auto start_t = std::chrono::high_resolution_clock::now();
+  float parallel_result = 0;
+  
   for(int i = 0;i<repeats;++i){
+    power_sum functor;
     tbb::parallel_reduce(brange,functor);
+    parallel_result = functor.result;
   }
 
-  EXPECT_GT(functor.result,0.);
+  EXPECT_GT(parallel_result,0.);
 }
 
 TEST(power_total,parallel_same_as_seq) {
 
   std::vector<device_t> dinfo = iot::device_info;
+  size_t items_per_thread = (dinfo.size() + std::thread::hardware_concurrency() - 1)/std::thread::hardware_concurrency();
+  
+  tbb::blocked_range<device_t*> brange(&dinfo[0],
+				       &dinfo[0] + size(),
+				       items_per_thread);
 
-  const size_t items_per_thread = (32 + std::thread::hardware_concurrency() - 1)/std::thread::hardware_concurrency();
-  tbb::blocked_range<size_t> brange(0,32,items_per_thread);
-
-  index_based_sum functor(&dinfo);
-
-  auto start_t = std::chrono::high_resolution_clock::now();
+  float parallel_sum = 0;
+  
   for(int i = 0;i<repeats;++i){
+    power_sum functor;
     tbb::parallel_reduce(brange,functor);
+    parallel_sum = functor.result;
   }
 
-  EXPECT_GT(functor.result,0.);
-
   double serial_sum = sum_iterators(&dinfo[0],
-				    &dinfo[0] + 32);
+				    &dinfo[0] + size());
 
-  int iserial = serial_sum;
-  int iparallel = functor.result;
-  ASSERT_EQ(iserial,iparallel);
-  EXPECT_FLOAT_EQ(functor.result,serial_sum);
+  EXPECT_FLOAT_EQ(parallel_sum,serial_sum);
 }
 
 int main(int argc, char **argv) {

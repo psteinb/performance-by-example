@@ -33,9 +33,10 @@ Starting out with a test again, she has to update what had considerably.
 TEST(power_difference,parallel) {
 
   std::vector<device_t> initial_device_info = iot::device_info;
-  std::vector<device_t> delta(iot::size());
-  iot::update_device_info(device_info);
   std::vector<device_t> updated_device_info = iot::device_info;
+  std::vector<device_t> delta(iot::size());
+  iot::update_device_info(updated_device_info);
+  
 
   tbb::blocked_range<size_t> brange(0,size());
   delta_apply ops(&initial_device_info,
@@ -106,11 +107,11 @@ TEST(power_total,parallel) {
   
   tbb::blocked_range<device_t*> brange(&dinfo[0],&dinfo[0] + size());
 
-  power_sum functor;
-
-  auto start_t = std::chrono::high_resolution_clock::now();
+  float parallel_sum = 0;
   for(int i = 0;i<repeats;++i){
-    tbb::parallel_reduce(brange,functor);
+    power_sum functor;
+	tbb::parallel_reduce(brange,functor);
+	parallel_sum = functor.result;
   }
 
   EXPECT_GT(functor.result,0.);
@@ -150,12 +151,30 @@ struct power_sum {
 
 There are some piculiarities to take note of here:
 
-* `power_sum(power_sum& _rhs, tbb::split )`, this copy constructor is required by TBB
+* `power_sum(power_sum& _rhs, tbb::split )`, this copy constructor is required by TBB, so that it can start a new worker (must guarantee that it can run concurrently with the other functions)
 * `void operator()(const tbb::blocked_range<device_t*>& range)`, this is the actual bracket operator that does the heavy lifting. Note, it does not need to be declared const anymore.
-* `void join(power_sum& _rhs)`, this function is required as well
+* `void join(power_sum& _rhs)`, this function collects the partial results obtained by the workers
 
-So what's going on here? `parallel_reduce` is a variant of the map-reduce pattern even though we do not have a mapping step here. This idiom is very common not only in implicit multi-threading libraries/frameworks.
+So what's going on here? `parallel_reduce` is a variant of the map-reduce pattern even though we do not have a mapping step here. TBB implements this on the basis of work stealing. In the background, the library sets up queues of work to do and tries to create workers to empty them. 
 
 ![parallel reduce operation using the sum operator](figures/parallel_reduce.svg)
 
-First, partial results are computed on a per data chunk aka per thread basis. After this is complete (there is a barrier inside TBB to ensure this), the individual partial results are summed by means of the `join` function. 
+First, partial results are computed per data chunk aka per worker/thread. After this is completed (there is a barrier inside TBB to wait for all workers to finish), then individual partial results are summed by means of the `join` function. 
+
+> ## C++2017! {.callout}
+>
+> At the time of writing, the next C++ standard (expected 2017) will offer parallel algorithms in a [generic and portable way](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4354.pdf).
+>
+~~~
+using namespace std::experimental::parallel;
+
+std::atomic<int> x=0;
+int a[] = {1,2,3,4};
+std::for_each(xpar, std::begin(a), std::end(a), [&](int item) {
+	x = x + item;
+	});
+~~~
+
+> ## Always measure! {.challenge}
+>
+> Compare the implementations of this lesson and [lesson 03](03-plain-threads.html). Is there a runtime difference? Does the difference depend on the number of items to prcess? 
