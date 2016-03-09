@@ -218,7 +218,7 @@ For most every-day applications, this is of no importance though. If you click a
 
 In the Moore's law era, the bandwidth at which memory is accessed didn't scale upwards as fast as the clock frequency of the CPUs. In order to hide this, a layered set of intermediate caches were introduced that can only hold a very limited number of data items but offer a very high bandwidth. So if a lot of data is needed, the hardware will (pre)fetch data into L3 cache when required, then load parts of it L2 and L1 until it finally can be moved into the registers that hold the input/output data of actual arithmetic or boolean arithmetic. 
 
-> ## Prope your Metal {.challenge}
+> ## Probe your Metal {.challenge}
 >
 > Take the time and find out:
 >
