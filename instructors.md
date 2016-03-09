@@ -29,3 +29,5 @@ None so far.
 ## Solutions to exercises
 
 Can be found in dedicated unit test files in the code/ directory of the [repo](https://github.com/psteinb/performance-by-example/tree/gh-pages/code).
+
+To package the code for distribution before a workshop, use the package target in code/Makefile.
