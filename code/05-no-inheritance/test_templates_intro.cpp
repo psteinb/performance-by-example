@@ -1,9 +1,24 @@
 
 #include <vector>
 #include <random>
+#include <chrono>
 
 #include "gtest/gtest.h"
 #include "stats_fixture.hpp"
+
+using mus_t = std::chrono::duration<double, std::chrono::microseconds::period>;
+static int repeats = 10;
+
+template <typename it_type>
+double simple_mean(it_type begin, it_type end){
+
+  size_t n_items = end - begin;
+  double result = 0;
+  for(;begin!=end;++begin)
+    result += *begin;
+
+  return result/n_items;
+}
 
 struct statistics_observable {
   
@@ -38,16 +53,42 @@ struct mean_fp32 : public statistics_observable {
 };
 
 
-TEST_F(stats_fixture,mean_example) {
+TEST_F(stats_fixture,mean_through_oop) {
 
+  float mean = 0;
+  auto start_t = std::chrono::high_resolution_clock::now();
+  for(int r =0;r<repeats;++r){
+    
+    mean_fp32 my_mean;
+    for(float & fl : fp_data)
+      my_mean.update_by(fl);
+    mean = my_mean.value();
 
-  mean_fp32 my_mean;
-  for(float & fl : fp_data)
-    my_mean.update_by(fl);
+  }
+  auto end_t = std::chrono::high_resolution_clock::now();
+  auto diff = mus_t(end_t - start_t).count();
+  std::cout << "mean_through_oop: " << diff << "ms\n";
+  
+  EXPECT_GT(mean,fp_mean - .1*fp_sigma);
+  EXPECT_LT(mean,fp_mean + .1*fp_sigma);
+  
+}
 
-  const float mean = my_mean.value();
-  EXPECT_GT(mean,fp_mean - fp_sigma);
-  EXPECT_LT(mean,fp_mean + fp_sigma);
+TEST_F(stats_fixture,mean_through_function) {
+
+  auto start_t = std::chrono::high_resolution_clock::now();
+  float mean = 0;
+
+  for(int r =0;r<repeats;++r){
+    mean = simple_mean(fp_data.begin(),fp_data.end());
+  }
+  auto end_t = std::chrono::high_resolution_clock::now();
+  auto diff = mus_t(end_t - start_t).count();
+  std::cout << "mean_through_function: " << diff << "ms\n";
+
+  
+  EXPECT_GT(mean,fp_mean - .1*fp_sigma);
+  EXPECT_LT(mean,fp_mean + .1*fp_sigma);
   
 }
 
