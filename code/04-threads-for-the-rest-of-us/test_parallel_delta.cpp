@@ -35,38 +35,50 @@ struct delta_apply{
     std::vector<device_t>* local_res = res;
     
     for( size_t i=range.begin(); i!=range.end(); ++i )
-      (*res)[i] = (*lhs)[i]-(*rhs)[i];
+      (*local_res)[i] = (*lhs)[i]-(*rhs)[i];
 
   }
 };
 
 
-TEST(power_total,non_zero_device_infos_available) {
+TEST(power_difference,non_zero_device_infos_available) {
   EXPECT_GT(iot::device_info.size(),0);
   
 }
 
-
-
-TEST(power_total,diff_parallel) {
+TEST(power_difference,test_update) {
 
   std::vector<device_t> initial_device_info = iot::device_info;
-  std::vector<device_t> delta(iot::size());
-  iot::update_device_info(device_info);
   std::vector<device_t> updated_device_info = iot::device_info;
+  iot::update_device_info(updated_device_info);
 
+  for(size_t i = 0;i<20;++i){
+    EXPECT_NE(initial_device_info[i].power_consumption,updated_device_info[i].power_consumption);
+  }
+  
+}
+
+TEST(power_difference,parallel) {
+
+  std::vector<device_t> initial_device_info = iot::device_info;
+  std::vector<device_t> updated_device_info = iot::device_info;
+  iot::update_device_info(updated_device_info);
+
+  std::vector<device_t> delta(iot::size());
+  
   tbb::blocked_range<size_t> brange(0,size());
   delta_apply ops(&initial_device_info,
 		  &updated_device_info,
 		  &delta);
-  auto start_t = std::chrono::high_resolution_clock::now();
+  
   for(int i = 0;i<repeats;++i){
     tbb::parallel_for(brange,ops);
   }
-  auto end_t = std::chrono::high_resolution_clock::now();
-  double time_diff_mus = (fp_microseconds_t(end_t - start_t)).count();
   
-  EXPECT_GT(time_diff_mus,0.);
+  for(size_t i = 0;i<20;++i){
+    EXPECT_NE(delta[i].power_consumption,0);
+    EXPECT_NE(delta[i].power_consumption,initial_device_info[i].power_consumption);
+  }
   
 }
 

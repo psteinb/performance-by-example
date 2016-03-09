@@ -59,7 +59,7 @@ namespace iot {
       
       item.temperature_kelvin += ((std::rand()/float(RAND_MAX)) - 1)*10;
       
-      item.power_consumption += (std::rand()/RAND_MAX)*20;
+      item.power_consumption = ((std::rand()/RAND_MAX)-1.)*item.power_consumption;
     }
 
   }
