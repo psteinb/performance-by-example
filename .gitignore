@@ -17,3 +17,10 @@ _site
 /code/04-threads-for-the-rest-of-us/test_parallel_delta
 /code/04-threads-for-the-rest-of-us/test_parallel_reduce
 perf.data*
+05-no-inheritance/
+06-code-outof-air/
+
+*html
+*png
+*pdf
+
