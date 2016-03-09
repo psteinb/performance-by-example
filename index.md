@@ -14,8 +14,8 @@ author: Peter Steinbach
 1.  [Data Structures Galore](02-fastslow.html)
 1.  [The Free Lunch is over](03-plain-threads.html)
 1.  [Threading for the rest of us](04-tbb.html)
-1.  [Structure without inheritance](05-no-inheritance.html)
-1.  [Source code from thin air](06-meta.html)
+<!-- 1.  [Structure without inheritance](05-no-inheritance.html) -->
+<!-- 1.  [Source code from thin air](06-meta.html) -->
 
 ## Other Resources
 
