@@ -4,9 +4,8 @@
 #include "gtest/gtest.h"
 #include "iot.hpp"
 
-TEST(access_works,in_first_room) {
-  EXPECT_GT(iot::active_devices(0,0),0);
-  
+TEST(access_works,building_present) {
+  EXPECT_GT(iot::size(),0);
 }
 
 int main(int argc, char **argv) {
