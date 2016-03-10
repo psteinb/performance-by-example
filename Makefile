@@ -27,6 +27,16 @@ INCLUDES = \
 # Chunk options for knitr (used in R conversion).
 R_CHUNK_OPTS = tools/chunk-options.R
 
+# the files below are needed to get a learner started
+modules_to_teach = \
+pbe-code/01-computers_and_coffee_machines \
+pbe-code/02-fast_slow_inheritance/ \
+pbe-code/03-plain_threads/ \
+pbe-code/04-threads-for-the-rest-of-us/
+
+PACKAGE_FILES = $(shell find $(modules_to_teach) -name "*pp" -or -name "Makefile" |grep -v test)
+PACKAGE_FILES += $(shell find $(modules_to_teach) -name "test_start_here.cpp")
+
 # Ensure that intermediate (generated) Markdown files from R are kept.
 .SECONDARY: $(DST_RMD)
 
@@ -41,9 +51,11 @@ check: $(ALL_MD)
 clean :
 	@rm -rf $$(find . -name '*~' -print)
 
+pbe-code.tgz : $(PACKAGE_FILES)
+	@tar cf $@ $^
+
 ## code_package  : create tarball with code for learners
-code_package :
-	@make -C code package
+code_package : pbe-code.tgz
 
 ## preview  : Build website locally for checking.
 preview : $(DST_ALL) code_package 
