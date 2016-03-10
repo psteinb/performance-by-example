@@ -30,7 +30,7 @@ namespace iot {
     
     std::vector<int> value(size());
     for (int & i : value)
-      i = (std::rand()/RAND_MAX) > .5 ? 1 : 0;
+      i = (std::rand()/float(RAND_MAX)) > .5 ? 1 : 0;
     return value;
   }
   
