@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Plain Threads
-minutes: 60
+minutes: 90
 ---
 
 > ## Learning Objectives {.objectives}
@@ -307,13 +307,13 @@ This chapter introduced you to explicit multi-threading, i.e. you have to constr
 >
 > Herb Sutter (Microsoft) once coined the phrase "The free lunch is over!" ([2005](http://www.gotw.ca/publications/concurrency-ddj.htm)) referring to the end of an era where software companies would simply wait for new hardware to be purchased and not bother with accelerating code.
 >
-> Look at the applications that you use every day in your computer. Do they use multiple threads? If no, why wouldn't they?
+> Look at the applications that you use every day in your computer. Do they use multiple threads or have concurrently running parts? If no, why wouldn't they? If yes, why can they?
 
 > ## Parallel Printing {.challenge}
 >
 > Use the implementation of `parallel_difference` and write a function that simply prints the current thread ID to stdout! What are your observations if you run the test several times.
 
 
-> ## Always measure! {.challenge}
+> ## Continue for Lola {.challenge}
 >
-> When things become performance critical, one should always expose a healthy scepticism towards a gut feeling on how fast/slow an algorithm will run. Take the contents of `iot::device_info` and compute the sum of all devices power consumption. Compare the runtime to a serial implementation.
+> When things become performance critical, one should always expose a healthy scepticism towards a gut feeling on how fast/slow an algorithm will run. Take the contents of `iot::device_info` and compute the sum of all devices power consumption using a sequential and a parallel algorithm. Compare the runtimes!

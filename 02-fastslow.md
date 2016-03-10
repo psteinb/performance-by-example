@@ -1,6 +1,7 @@
 ---
 layout: page
-title: Fast and Slow Data Structures
+title: Data Structures Galore
+subtitle: Fast and Slow Structs and Classes
 minutes: 40
 ---
 
@@ -27,7 +28,8 @@ After the institute head leaves, Lola remembers that she saw portions of the cod
 
     //...
  };
- ```
+
+```
 
 The `iot::device_t` is the one that comes to mind first. This is an abstraction used to encapsulate the network credentials of a device, the temperature of it (some low-priced chips can become very hot) and the power it currently consumes. After all, the IoT claims that it is very energy efficient. The `iot::device_info` is a vector of `iot::device_t` that are currently active. So Lola starts to explore the API by dedicated tests.
 
@@ -35,12 +37,9 @@ The `iot::device_t` is the one that comes to mind first. This is an abstraction 
 
 TEST_F(iot_setup, runtime_original) {
 
-  const auto current_devices = iot::device_info;
-
-   EXPECT_LE(iot::size(),8*16);
+  EXPECT_EQ(iot::device_info.size(),iot::size());
 
 }
-
 ```
 
 The test runs through and Lola is happy to have overcome the first obstacle of getting access to the data. Her predecessors has setup a layered data model for her. On top, the `render_entity` resides that offers any client code light-weight access to the data beneath.
@@ -99,7 +98,7 @@ struct temperature_view {
 
 	//...
   };
-  ```
+```
   
   Instances of `temperature_view` ingest the data and prepare the visualisation by means of a string. Lola notices that this is not exactly what she would call a view, but so be it for now. The task at hand is straight forward now:
   
@@ -146,6 +145,7 @@ When running the code on a subsample of the building, she is surprised to find o
 >
 > ```
 > $ stat -e LLC-load-misses,LLC-loads ./test_runtime_device_display --gtest_filter=iot_setup.runtime_original
+> ```
 > Performance counter stats for './test_runtime_device_display --gtest_filter=iot_setup.runtime_original':
 > ```
 > 76.668.366.153      cycles                                                      
