@@ -134,7 +134,7 @@ TEST(Call_Devices, runtime_real) {
   for(int i =0;i<repeats;++i)
     n_active = count_active();
   auto t_end = std::chrono::high_resolution_clock::now();
-  double time_diff_mus = (std::chrono::nanoseconds(t_end - t_start)).count();
+  double time_diff_mus = std::chrono::duration_cast<std::chrono::microseconds>(t_end - t_start).count();
   time_diff_mus /= repeats;
   
   EXPECT_GT(time_diff_mus,0);
@@ -154,7 +154,7 @@ TEST(Call_Devices, runtime_training) {
       n_active_synthetic += training_data[i];
 
   auto t_end = std::chrono::high_resolution_clock::now();
-  double time_diff_mus = std::chrono::duration_cast<std::chrono::nanoseconds>(t_end - t_start).count()/repeats;
+  double time_diff_mus = std::chrono::duration_cast<std::chrono::microseconds>(t_end - t_start).count()/repeats;
   
   EXPECT_GT(time_diff_mus,0);
   std::cout << "training: " << time_diff_mus // << ", for " << iot::n_rooms()*iot::n_levels()*sizeof(int)/(1024) <<" KB of items
@@ -171,9 +171,9 @@ Lola sets herself the goal, that her implementation is as good as traversing a l
 $ ./test_runtime_device_access
 [==========] Running 2 tests from 1 test case.
 ...
-real    : 10.1 ns
+real    : 211410 mus
 ...
-training: 5 ns
+training: 89221 mus
 ...
 [  PASSED  ] 2 tests.
 ~~~
@@ -199,11 +199,11 @@ Lola changes her application accordingly and sees a runtime that is equivalent t
 $ ./test_runtime_device_access
 [==========] Running 3 tests from 1 test case.
 ...
-real    : 9.9 ns
+real    : 211410 mus
 ...
-fast    : 4 ns
+training: 89221 mus
 ...
-training: 4 ns
+fast    : 140421 mus
 ...
 [  PASSED  ] 3 tests.
 ~~~

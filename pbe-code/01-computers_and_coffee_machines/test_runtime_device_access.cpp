@@ -53,11 +53,11 @@ TEST(Call_Devices, runtime_real) {
   for(int i =0;i<repeats;++i)
     n_active = count_active();
   auto t_end = std::chrono::high_resolution_clock::now();
-  double time_diff_mus = (std::chrono::nanoseconds(t_end - t_start)).count();
+  double time_diff_mus = std::chrono::duration_cast<std::chrono::microseconds>(t_end - t_start).count();
   time_diff_mus /= repeats;
   
   EXPECT_GT(time_diff_mus,0);
-  std::cout << "real    : " << time_diff_mus << " ns\n";
+  std::cout << "real    : " << time_diff_mus << " mus\n";
   
 }
 
@@ -73,11 +73,11 @@ TEST(Call_Devices, runtime_training) {
       n_active_synthetic += training_data[i];
 
   auto t_end = std::chrono::high_resolution_clock::now();
-  double time_diff_mus = std::chrono::duration_cast<std::chrono::nanoseconds>(t_end - t_start).count()/repeats;
+  double time_diff_mus = std::chrono::duration_cast<std::chrono::microseconds>(t_end - t_start).count()/repeats;
   
   EXPECT_GT(time_diff_mus,0);
-  std::cout << "training: " << time_diff_mus // << ", for " << iot::n_rooms()*iot::n_levels()*sizeof(int)/(1024) <<" KB of items
-	    << " ns\n";
+  std::cout << "training: " << time_diff_mus
+	    << " mus\n";
   
 }
 
@@ -91,10 +91,10 @@ TEST(Call_Devices, runtime_fast) {
     n_active = count_active_fast();
   
   auto t_end = std::chrono::high_resolution_clock::now();
-  double time_diff_mus = std::chrono::duration_cast<std::chrono::nanoseconds>(t_end - t_start).count()/repeats;
+  double time_diff_mus = std::chrono::duration_cast<std::chrono::microseconds>(t_end - t_start).count()/repeats;
 
   EXPECT_GT(time_diff_mus,0);
-  std::cout << "fast    : " << time_diff_mus << " ns\n";
+  std::cout << "fast    : " << time_diff_mus << " mus\n";
   
 }
 
