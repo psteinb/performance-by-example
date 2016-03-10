@@ -20,24 +20,26 @@ In order to access the status of any device in room 12 on the first floor, the f
 ~~~ {.cpp}
 int floor = 1;
 int room = 11;
-auto room_ref = iot::devices(floor,room)
-int answer = room_ref.active_devices()
+int n_active = iot::active_devices(floor,room)
 ~~~
 
-She heard from a friend of hers, that writing tests before any implementation is added is the latest and greatest software development method in the industry. As she wants to keep her job chances high, she decides to try this method and train this way of writing code on the job.
+She heard from a friend of hers, that writing tests before any implementation is added is the latest and greatest software development method in the industry. As she wants to keep her job chances high, she decides to try this method and train this way of writing code on the job. To start with, she wants to know if any devices are active in the basement, i.e. `level = 0`:
 
 ~~~ {.cpp}
 #include "iot.hpp"
 #include "gtest/gtest.h"
 
-TEST(access_works,in_first_room) {
-	EXPECT_GT(iot::devices_active(0,0),0);
+TEST(access_works,anything_on_first_level) {
+
+  int n_active = 0;
+  for(int r = 0;r<iot::n_rooms();++r)
+    n_active += (iot::active_devices(0,r));
 }
 ~~~
 
 > ## Unit test libraries for C++ {.callout}
 >
-> We opted for [google-test](https://github.com/google/googletest) library, not because we prefer it or we were paid by google or any other unlikely reason. No, simply because the target audience of the first incarnation of this material was known be part of a community that uses/used google-test extensively. At the time of writing, there are other very good unit testing libraries out there: [boost unified test framework](http://www.boost.org/doc/libs/1_60_0/libs/test/doc/html/index.html), [cgreen](https://github.com/cgreen-devs/cgreen), [catch](https://github.com/philsquared/Catch), ... . In the end, it depends on your tast, the context you work in and what you require a unit test framework to do. So please, experiment!
+> We opted for the [google-test](https://github.com/google/googletest) library, not because we prefer it or we were paid by google or any other unlikely reason. No, simply because the target audience of the first incarnation of this material was known to be part of a community that uses/used google-test extensively. At the time of writing, there are other very C++ good unit testing libraries out there: [boost unified test framework](http://www.boost.org/doc/libs/1_60_0/libs/test/doc/html/index.html), [cgreen](https://github.com/cgreen-devs/cgreen), [catch](https://github.com/philsquared/Catch), ... . In the end, it depends on your taste, the context you work in and what you require a unit test framework to do. So please, experiment!
 
 
 ~~~ {.output}
@@ -45,16 +47,16 @@ $ ./test_device_access
 [==========] Running 1 test from 1 test case.
 [----------] Global test environment set-up.
 [----------] 1 test from access_works
-[ RUN      ] access_works.in_first_room
-[       OK ] access_works.in_first_room (0 ms)
-[----------] 1 test from access_works (0 ms total)
+[ RUN      ] access_works.anything_on_first_level
+[       OK ] access_works.anything_on_first_level (2 ms)
+[----------] 1 test from access_works (2 ms total)
 
 [----------] Global test environment tear-down
-[==========] 1 test from 1 test case ran. (0 ms total)
+[==========] 1 test from 1 test case ran. (3 ms total)
 [  PASSED  ] 1 test.
 ~~~
 
-She will add some more tests now, to explore the API of the `iot` namespace and it's features. In any case, she soon turns to the task at hand. She wants to sum up the number of online devices. This needs to be performed very quickly as the information will be displayed in real-time in the foyer of the institute. If something hangs there, the IOTs good name is at stake. 
+What a good feeling! Everything is green. She will add some more tests now, to explore the API of the `iot` namespace and it's features. In any case, she soon turns to the task at hand. She wants to sum up the number of online devices. This needs to be performed very quickly as the information will be displayed in real-time in the foyer of the institute. If something hangs there, the IOTs good name is at stake. 
 
 ~~~ {.cpp}
 TEST(Call_Devices, Sum_of_active) {
