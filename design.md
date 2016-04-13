@@ -86,4 +86,14 @@ The lesson is taught in an intructor-guided way. An IDE/editor is opened where t
 * language and terminology uptake to navigate more easily on online resources and discuss with peers
 
 
-###
+### Learners Will Be Able To...
+
+### Learners Will Know...
+
+## Learning Plan
+
+### [Computers and Coffee Machines](01-computers.html)
+### [Data Structures Galore](02-fastslow.html)
+### [The Free Lunch is over](03-plain-threads.html)
+### [Threading for the rest of us](04-tbb.html)
+

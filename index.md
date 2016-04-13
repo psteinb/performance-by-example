@@ -25,3 +25,4 @@ The material below is composed with a self-study learner in mind. To get started
 *   [Reference](reference.html)
 *   [Discussion](discussion.html)
 *   [Instructor's Guide](instructors.html)
+*   [Lesson Design](design.html)
