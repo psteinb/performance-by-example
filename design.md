@@ -33,8 +33,8 @@ The lesson is taught in an intructor-guided way. An IDE/editor is opened where t
 * Audience
 
   * graduate students, specialists, developers in any field that uses `C++`
-  * who understand the fundamental building plus of the `++` in `C++`
-  * who potentially have already written (or are writing) client code applications (in a non-software-engineering way)
+  * who understand the fundamental building blocks of the `++` in `C++` (structures with fields and methods, inheritance, STL containers)
+  * who potentially have already written (or are writing) client code applications (in a non-software-engineering way) to C++ frameworks
 
 * Constraints
 
@@ -88,7 +88,34 @@ The lesson is taught in an intructor-guided way. An IDE/editor is opened where t
 
 ### Learners Will Be Able To...
 
+* write unit tests with googletest
+* compose and use unit test fixtures
+* synthesize data for unit tests
+* measure function calls that are suspected to show poor performance
+* use a profiler like `perf` under linux to access hardware counters
+* refactor/optimize slow code based on passing unit tests
+* reorganize loops over multi-dimensional fields to be more cache efficient
+* reorganize data `struct`ures to become structures of arrays
+* write functions that work in parallel on independent data partitions
+* use the `std::thread` object to execute functions in parallel and `std::thread::join` to the main thread them once finished
+* declare variables that can be written to by multiple parallel functions concurrently using the `std::atomic` template
+* use STL algorithms like `std::accumulate` to sum up a `std::vector`
+* use open-source parallelisation libraries ([intel tbb](www.threadingbuildingblocks.org))
+* implicitely execute loops in parallel using the `parallel_for` function template
+* implicitely execute a reduction loop in parallel using the `parallel_reduce` function template
+* measure the runtime of parallel programs 
+
 ### Learners Will Know...
+
+* use unit tests to explore libraries/frameworks not written by the learner
+* that measuring runtimes of function calls is easy in C++11 and beyond
+* how a modern CPU is conceptually laid out
+* how source code relates to runtime and execution in hardware
+* how to exploit parallelism in C++11 and beyond
+* that there are libraries out there that help employ parallelism in a straightforward fashion
+* compare the runtime of parallel programs to serial programs
+* profilers show statistics about runtime parameters of programs
+* profilers can help identify performance bottlenecks
 
 ## Learning Plan
 
