@@ -4,12 +4,14 @@ There are hundreds of C++ tutorials on the web, there are possibly a lot more in
 
 ## Workshops given
 
-* APC 2016, Desy Hamburg, March 10/11th, 2016 ([material](https://idisk.mpi-cbg.de/~steinbac/performance-by-example/))
+* APC 2016, Desy Hamburg, March 10/11th, 2016 ([material](https://idisk.mpi-cbg.de/~steinbac/performance-by-example/), videos: [1/4](https://www.youtube.com/watch?v=fSds5nJCyfg))
 
 ## Open for contribution
 
 This material is open for contributions, suggestions, corrections and critics. Feel free to use the issue tracker or send a pull request.
 
-## For future instructors
+## For instructors, curious or contributors
 
-Please see [the instructions](instructors.md) first.
+Please see [the instructions](instructors.md) first. If you wanna know more about the reasons and motivations behind this material, see the [Lesson Design](design.md) description.
+
+
