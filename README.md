@@ -4,7 +4,7 @@ There are hundreds of C++ tutorials on the web, there are possibly a lot more in
 
 ## Workshops given
 
-* APC 2016, Desy Hamburg, March 10/11th, 2016 ([material](https://idisk.mpi-cbg.de/~steinbac/performance-by-example/), videos: [1/4](https://www.youtube.com/watch?v=fSds5nJCyfg))
+* APC 2016, Desy Hamburg, March 10/11th, 2016 ([material](https://idisk.mpi-cbg.de/~steinbac/performance-by-example/), videos: [1/4](https://www.youtube.com/watch?v=fSds5nJCyfg), [2/4](https://youtu.be/Tsjxm-InhV0))
 
 ## Open for contribution
 
